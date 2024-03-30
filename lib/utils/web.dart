@@ -66,3 +66,61 @@ Future<String> fetchButtonLinks(String endpoint) async {
     //check connection
   }
 }
+
+Future<void> sendDeviceIdToBackend(String deviceID, String coins) async {
+  const url = 'https://loungecard.website/public/api/register';
+
+  // final headers = {
+  //   'Content-Type': 'application/json',
+  //   // Add any additional headers if required
+  // };
+  // final body = json.encode({
+  //   'name': deviceID,
+  //   'coins': '20',
+  //   // You can include additional data if needed
+  // });
+
+  try {
+    final response = await http.post(
+      Uri.parse(url),
+      // headers: headers,
+      body: {
+        'name': deviceID,
+        'coins': coins,
+      },
+    );
+
+    if (response.statusCode == 200) {
+      // Registration successful
+      print('Device ID sent successfully!');
+    } else {
+      // Registration failed
+      print('Failed to send device ID. Status code: ${response.statusCode}');
+    }
+  } catch (e) {
+    print('Error sending device ID: $e');
+  }
+}
+
+Future<void> updateCoins(String deviceID, String coins) async {
+  const url = 'https://loungecard.website/public/api/update-coins';
+
+  try {
+    final response = await http.post(
+      Uri.parse(url),
+      // headers: headers,
+      body: {
+        'name': deviceID,
+        'coins': coins,
+      },
+    );
+
+    if (response.statusCode == 200) {
+      print('Device ID sent successfully!');
+    } else {
+      print('Failed to send device ID. Status code: ${response.statusCode}');
+    }
+  } catch (e) {
+    print('Error sending device ID: $e');
+  }
+}

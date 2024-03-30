@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:games/utils/chrome_custom_tabs.dart';
+import 'package:games/utils/web.dart';
 import 'package:games/variables/local_variables.dart';
 import 'package:games/variables/modal_variable.dart';
 import 'package:games/widgets/commonbottombaritem.dart';
@@ -9,6 +10,7 @@ import 'package:games/widgets/commonmincoinbar.dart';
 import 'package:games/widgets/commontop.dart';
 import 'package:games/widgets/commonunlockbox.dart';
 import 'package:games/widgets/help.dart';
+import 'package:kochava_tracker/kochava_tracker.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -21,6 +23,7 @@ class GameHome extends StatefulWidget {
 
 class _GameHomeState extends State<GameHome> {
   late SharedPreferences _prefs;
+  String deviceIdK = 'N/A';
 
   Future<void> _refreshData() async {
     int updatedCoins = await SharedPreferences.getInstance().then((prefs) {
@@ -36,9 +39,17 @@ class _GameHomeState extends State<GameHome> {
   @override
   void initState() {
     super.initState();
+
+    getdeviceId();
+    updateCoins(deviceId, gameCoins.toString());
     if (phase != 0 && gameCoins >= phase) {
       _initializeSharedPreferences();
     }
+  }
+
+  Future<void> getdeviceId() async {
+    var prefs = await SharedPreferences.getInstance();
+    deviceId = prefs.getString(deviceIdLabel)!;
   }
 
   Future<void> _initializeSharedPreferences() async {

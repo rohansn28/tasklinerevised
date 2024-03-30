@@ -39,6 +39,11 @@ class _PlayScreenState extends State<PlayScreen> with WidgetsBindingObserver {
         leading: InkWell(
           child: const Icon(Icons.arrow_back),
           onTap: () async {
+            //updating coins to db Starts -->
+            var prefs = await SharedPreferences.getInstance();
+            deviceId = prefs.getString(deviceIdLabel)!;
+            updateCoins(deviceId, gameCoins.toString());
+            // end-->
             Navigator.pop(context);
             Navigator.pushReplacement(
               context,
@@ -56,7 +61,12 @@ class _PlayScreenState extends State<PlayScreen> with WidgetsBindingObserver {
         title: const Text('PLAY'),
       ),
       body: PopScope(
-        onPopInvoked: (didPop) {
+        onPopInvoked: (didPop) async {
+          //updating coins to db Starts -->
+          var prefs = await SharedPreferences.getInstance();
+          deviceId = prefs.getString(deviceIdLabel)!;
+          updateCoins(deviceId, gameCoins.toString());
+          // end-->
           WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
             Navigator.pushReplacement(
               context,

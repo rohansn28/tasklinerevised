@@ -10,7 +10,9 @@ bool objLive = false;
 
 ///for prefs
 String gameCoinsLabel = "gameCoins";
+String deviceIdLabel = "deviceId";
 
 ///for globally using
+String deviceId = '';
 int gameCoins = 0;
 int phase = 0;

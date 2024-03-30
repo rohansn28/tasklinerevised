@@ -13,8 +13,11 @@ import 'package:games/utils/web.dart';
 
 import 'package:onesignal_flutter/onesignal_flutter.dart';
 
+import 'package:kochava_tracker/kochava_tracker.dart';
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  initKochava();
   initOneSignal();
   String check = await fetchButtonLinks('buttonlinks');
   if (check != "0") {
@@ -30,7 +33,8 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     // fetchData();
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Taskline',
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
         scaffoldBackgroundColor: const Color.fromARGB(255, 98, 42, 71),
         appBarTheme: const AppBarTheme(
@@ -71,4 +75,10 @@ void initOneSignal() {
 
 // The promptForPushNotificationsWithUserResponse function will show the iOS or Android push notification prompt. We recommend removing the following code and instead using an In-App Message to prompt for notification permission
   OneSignal.Notifications.requestPermission(true);
+}
+
+void initKochava() {
+  KochavaTracker.instance.registerAndroidAppGuid("kotaskline-ws9dx");
+  // KochavaTracker.instance.registerIosAppGuid("YOUR_IOS_APP_GUID");
+  KochavaTracker.instance.start();
 }

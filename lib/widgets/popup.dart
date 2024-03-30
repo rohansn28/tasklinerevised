@@ -4,6 +4,8 @@ import 'package:games/game_screen.dart';
 import 'package:games/play.dart';
 import 'package:games/premium_screen.dart';
 import 'package:games/task_line_screen.dart';
+import 'package:games/utils/web.dart';
+import 'package:games/variables/local_variables.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class PopUp extends StatefulWidget {
@@ -78,12 +80,15 @@ class _PopUpState extends State<PopUp> {
                     child: InkWell(
                       onTap: () async {
                         _prefs = await SharedPreferences.getInstance();
+
                         _prefs.setInt(widget.taskname,
                             DateTime.now().millisecondsSinceEpoch);
                         Navigator.pop(context);
                         // Navigator.popUntil(
                         //     context, ModalRoute.withName('/play'));
                         if (widget.taskname.contains('PLAY')) {
+                          deviceId = _prefs.getString(deviceIdLabel)!;
+                          updateCoins(deviceId, gameCoins.toString());
                           Navigator.pushReplacement(
                             context,
                             MaterialPageRoute(
@@ -92,6 +97,10 @@ class _PopUpState extends State<PopUp> {
                           );
                         }
                         if (widget.taskname.contains('TASK')) {
+                          deviceId = _prefs.getString(deviceIdLabel)!;
+                          updateCoins(deviceId, gameCoins.toString());
+                          deviceId = _prefs.getString(deviceIdLabel)!;
+                          updateCoins(deviceId, gameCoins.toString());
                           Navigator.pushReplacement(
                             context,
                             MaterialPageRoute(
@@ -100,6 +109,8 @@ class _PopUpState extends State<PopUp> {
                           );
                         }
                         if (widget.taskname.contains('BONUS')) {
+                          deviceId = _prefs.getString(deviceIdLabel)!;
+                          updateCoins(deviceId, gameCoins.toString());
                           Navigator.pushReplacement(
                             context,
                             MaterialPageRoute(
@@ -108,6 +119,8 @@ class _PopUpState extends State<PopUp> {
                           );
                         }
                         if (widget.taskname.contains('GAME')) {
+                          deviceId = _prefs.getString(deviceIdLabel)!;
+                          updateCoins(deviceId, gameCoins.toString());
                           Navigator.pushReplacement(
                             context,
                             MaterialPageRoute(
@@ -116,6 +129,8 @@ class _PopUpState extends State<PopUp> {
                           );
                         }
                         if (widget.taskname.contains('M TASK')) {
+                          deviceId = _prefs.getString(deviceIdLabel)!;
+                          updateCoins(deviceId, gameCoins.toString());
                           Navigator.pushReplacement(
                             context,
                             MaterialPageRoute(
