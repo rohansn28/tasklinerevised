@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:games/variables/local_variables.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class CommonBoxNew extends StatefulWidget {
   final String text;
@@ -19,68 +17,13 @@ class CommonBoxNew extends StatefulWidget {
 }
 
 class _CommonBoxNewState extends State<CommonBoxNew> {
-  late SharedPreferences _prefs;
-  late DateTime _lastCompletion;
-  @override
-  void initState() {
-    super.initState();
-    _initializeSharedPreferences();
-  }
-
-  Future<void> _initializeSharedPreferences() async {
-    _prefs = await SharedPreferences.getInstance();
-  }
-
-  void dialogbox() async {
-    _prefs = await SharedPreferences.getInstance();
-
-    _lastCompletion = DateTime.fromMillisecondsSinceEpoch(
-        _prefs.getInt('${phase}Coin-Completiontime') ?? 0);
-
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text(textAlign: TextAlign.center, 'Task Locked'),
-          content: Text(
-              textAlign: TextAlign.center,
-              'New Tasks available on \n${_lastCompletion.add(const Duration(hours: 24))}.'),
-          actions: <Widget>[
-            Center(
-              child: TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-                child: const Text('OK'),
-              ),
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  bool _canPerformTask() {
-    _lastCompletion = DateTime.fromMillisecondsSinceEpoch(
-        _prefs.getInt('${phase}Coin-Completiontime') ?? 0);
-
-    DateTime now = DateTime.now();
-    Duration difference = now.difference(_lastCompletion);
-
-    return difference.inHours >= 24;
-  }
-
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: InkWell(
         onTap: () {
-          if (gameCoins <= phase && _canPerformTask()) {
-            Navigator.pushNamed(context, widget.route);
-          } else {
-            dialogbox();
-          }
+          Navigator.pushNamed(context, widget.route);
         },
         child: Card(
           shape: RoundedRectangleBorder(
@@ -95,7 +38,6 @@ class _CommonBoxNewState extends State<CommonBoxNew> {
             child: Center(
               child: Text(
                 widget.text,
-                // style: Theme.of(context).textTheme.headlineLarge,
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: widget.fontSize,

@@ -11,8 +11,12 @@ bool objLive = false;
 ///for prefs
 String gameCoinsLabel = "gameCoins";
 String deviceIdLabel = "deviceId";
+String isActiveLabel = "isActive";
+String tasklenghtLabel = "tasklength";
 
 ///for globally using
 String deviceId = '';
 int gameCoins = 0;
 int phase = 0;
+bool isActive = false;
+int tasklength = 0;

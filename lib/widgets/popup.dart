@@ -1,17 +1,22 @@
 import 'package:flutter/material.dart';
-import 'package:games/bonus_screen.dart';
-import 'package:games/game_screen.dart';
-import 'package:games/play.dart';
 import 'package:games/premium_screen.dart';
-import 'package:games/task_line_screen.dart';
 import 'package:games/utils/web.dart';
 import 'package:games/variables/local_variables.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class PopUp extends StatefulWidget {
   final int coins;
+  final String taskindex;
+  final String tasklen;
+
   final String taskname;
-  const PopUp({super.key, required this.coins, required this.taskname});
+  const PopUp({
+    super.key,
+    required this.coins,
+    required this.taskname,
+    required this.taskindex,
+    required this.tasklen,
+  });
 
   @override
   State<PopUp> createState() => _PopUpState();
@@ -22,6 +27,7 @@ class _PopUpState extends State<PopUp> {
 
   @override
   Widget build(BuildContext context) {
+    // print(widget.taskname);
     return Scaffold(
       backgroundColor: Colors.black.withOpacity(0.8),
       body: Center(
@@ -35,19 +41,6 @@ class _PopUpState extends State<PopUp> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              // Padding(
-              //   padding: const EdgeInsets.only(top: 0, right: 10, bottom: 0),
-              //   child: Container(
-              //     height: 100,
-              //     width: 100,
-              //     decoration: const BoxDecoration(
-              //       color: Colors.transparent,
-              //       image: DecorationImage(
-              //           image: AssetImage("assets/images/trophy.png"),
-              //           fit: BoxFit.fill),
-              //     ),
-              //   ),
-              // ),
               Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -83,52 +76,18 @@ class _PopUpState extends State<PopUp> {
 
                         _prefs.setInt(widget.taskname,
                             DateTime.now().millisecondsSinceEpoch);
+
+                        _prefs.setBool('click ${widget.taskindex}', true);
+
+                        if (_prefs.getBool(
+                                'click ${int.parse(widget.tasklen) - 1}') ==
+                            true) {
+                          _prefs.setBool(isActiveLabel, true);
+                        }
+
                         Navigator.pop(context);
-                        // Navigator.popUntil(
-                        //     context, ModalRoute.withName('/play'));
-                        if (widget.taskname.contains('PLAY')) {
-                          deviceId = _prefs.getString(deviceIdLabel)!;
-                          updateCoins(deviceId, gameCoins.toString());
-                          Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => const PlayScreen(),
-                            ),
-                          );
-                        }
-                        if (widget.taskname.contains('TASK')) {
-                          deviceId = _prefs.getString(deviceIdLabel)!;
-                          updateCoins(deviceId, gameCoins.toString());
-                          deviceId = _prefs.getString(deviceIdLabel)!;
-                          updateCoins(deviceId, gameCoins.toString());
-                          Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => const TaskLineScreen(),
-                            ),
-                          );
-                        }
-                        if (widget.taskname.contains('BONUS')) {
-                          deviceId = _prefs.getString(deviceIdLabel)!;
-                          updateCoins(deviceId, gameCoins.toString());
-                          Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => const BounsScreen(),
-                            ),
-                          );
-                        }
-                        if (widget.taskname.contains('GAME')) {
-                          deviceId = _prefs.getString(deviceIdLabel)!;
-                          updateCoins(deviceId, gameCoins.toString());
-                          Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => const GameScreen(),
-                            ),
-                          );
-                        }
-                        if (widget.taskname.contains('M TASK')) {
+
+                        if (widget.taskname.contains('CLICK')) {
                           deviceId = _prefs.getString(deviceIdLabel)!;
                           updateCoins(deviceId, gameCoins.toString());
                           Navigator.pushReplacement(

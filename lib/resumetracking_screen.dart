@@ -20,6 +20,8 @@ class _ResumeTrackingScreenState extends State<ResumeTrackingScreen>
   String type = "";
   String id = "";
   String tasknamenew = "";
+  String index = "";
+  String len = "";
 
   @override
   void initState() {
@@ -54,15 +56,15 @@ class _ResumeTrackingScreenState extends State<ResumeTrackingScreen>
               .difference(DateTime.now().toUtc())
               .inSeconds;
       timeRemainingHandle(timeLeft.toString(), prefs.getString("coin")!,
-          prefs.getString("currentLink")!);
+          prefs.getString("currentLink")!, index);
     } else {
       // after time
 
-      winnerHandle(int.parse(prefs.getString("coin")!), tasknamenew);
+      winnerHandle(int.parse(prefs.getString("coin")!), tasknamenew, index);
     }
   }
 
-  void winnerHandle(int coin, String tasnamenew) {
+  void winnerHandle(int coin, String tasnamenew, String index) {
     Navigator.pop(context);
     increaseGameCoin(coin);
     // showSnackBar(context, "You Won 100 Coins");
@@ -71,11 +73,14 @@ class _ResumeTrackingScreenState extends State<ResumeTrackingScreen>
       PopUp(
         coins: coin,
         taskname: tasknamenew,
+        taskindex: index,
+        tasklen: len,
       ),
     );
   }
 
-  void timeRemainingHandle(String timeLeftSeconds, String coin, String link) {
+  void timeRemainingHandle(
+      String timeLeftSeconds, String coin, String link, String index) {
     Navigator.pop(context);
     // showSnackBar(context, "Please Wait 1 min on the website");
     launchPopupScreen(
@@ -87,6 +92,8 @@ class _ResumeTrackingScreenState extends State<ResumeTrackingScreen>
           type: type,
           id: id,
           taskname: tasknamenew,
+          index: index,
+          tasklen: len,
         ));
   }
 
@@ -100,7 +107,6 @@ class _ResumeTrackingScreenState extends State<ResumeTrackingScreen>
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) async {
     if (state == AppLifecycleState.resumed) {
-      // print('resumed');
       checkPrefs();
       setState(() {
         buildorNot = false;
@@ -119,19 +125,29 @@ class _ResumeTrackingScreenState extends State<ResumeTrackingScreen>
   Widget build(BuildContext context) {
     final routes =
         ModalRoute.of(context)?.settings.arguments as Map<String, String>;
+
     final link = routes['link'];
     final coin = routes['coin'];
     seconds = routes['seconds']!;
     type = routes['type']!;
     id = routes['id']!;
+
     setState(() {
       tasknamenew = routes['taskname']!;
+      len = routes['tasklen']!;
+      index = routes['index']!;
     });
 
     (link!);
 
     if (buildorNot) {
-      _launchLink(link, coin!, seconds, type, id);
+      _launchLink(
+        link,
+        coin!,
+        seconds,
+        type,
+        id,
+      );
     }
     return Scaffold(
       backgroundColor: Colors.cyan.shade900,

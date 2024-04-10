@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:games/variables/local_variables.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class TimeRemainingWidget extends StatelessWidget {
-  late final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
-  final String seconds, link, coins, type, id, taskname;
+class TimeRemainingWidget extends StatefulWidget {
+  final String seconds, link, coins, type, id, taskname, index;
+  String tasklen;
   TimeRemainingWidget({
     super.key,
     required this.seconds,
@@ -12,7 +13,32 @@ class TimeRemainingWidget extends StatelessWidget {
     required this.type,
     required this.id,
     required this.taskname,
+    required this.index,
+    required this.tasklen,
   });
+
+  @override
+  State<TimeRemainingWidget> createState() => _TimeRemainingWidgetState();
+}
+
+class _TimeRemainingWidgetState extends State<TimeRemainingWidget> {
+  late final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
+  late SharedPreferences prefs;
+  late final tasklength;
+
+  @override
+  void initState() {
+    super.initState();
+    // initializeSharedPreferences();
+  }
+
+  Future<void> initializeSharedPreferences() async {
+    prefs = await SharedPreferences.getInstance();
+    setState(() {
+      tasklength = prefs.getInt(tasklenghtLabel);
+      widget.tasklen = tasklength.toString();
+    });
+  }
 
   void handleCancelButton(context) {
     removePrefs();
@@ -22,12 +48,14 @@ class TimeRemainingWidget extends StatelessWidget {
   void handleContinueButton(context) {
     Navigator.pop(context);
     Navigator.pushNamed(context, "/tracking", arguments: {
-      'link': link,
-      'coin': coins.toString(),
-      'seconds': seconds,
-      'type': type,
-      'id': id,
-      'taskname': taskname,
+      'link': widget.link,
+      'coin': widget.coins.toString(),
+      'seconds': widget.seconds,
+      'type': widget.type,
+      'id': widget.id,
+      "index": widget.index,
+      'taskname': widget.taskname,
+      'tasklen': widget.tasklen,
     });
   }
 
@@ -69,7 +97,7 @@ class TimeRemainingWidget extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Text(
-                            (int.parse(seconds) / 60)
+                            (int.parse(widget.seconds) / 60)
                                 .toString()
                                 .toString()
                                 .substring(0, 1),
@@ -102,7 +130,7 @@ class TimeRemainingWidget extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Text(
-                            (int.parse(seconds) % 60).toString(),
+                            (int.parse(widget.seconds) % 60).toString(),
                             style: const TextStyle(
                                 color: Colors.white,
                                 fontSize: 30,

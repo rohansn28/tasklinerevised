@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 
 class CommonMinCoinBar extends StatelessWidget {
-  final String text1, text2;
+  final String text;
   const CommonMinCoinBar({
     super.key,
-    required this.text1,
-    required this.text2,
+    required this.text,
   });
 
   @override
@@ -17,7 +16,7 @@ class CommonMinCoinBar extends StatelessWidget {
       child: Center(
         child: Text(
           textAlign: TextAlign.center,
-          '$text1 \n $text2',
+          text,
           style: const TextStyle(
             fontSize: 16.0,
             fontWeight: FontWeight.bold,

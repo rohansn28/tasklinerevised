@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:games/variables/local_variables.dart';
 import 'package:games/widgets/commonadmarkbottom.dart';
+
 import 'package:shared_preferences/shared_preferences.dart';
 
 class CommonPremiumTask extends StatefulWidget {
@@ -8,14 +10,20 @@ class CommonPremiumTask extends StatefulWidget {
   final String winCoin;
   final String url;
   final int index;
+  final Color color;
+  String tasklen;
+  // final Function(bool) onIsActiveChanged;
 
-  const CommonPremiumTask({
+  CommonPremiumTask({
     super.key,
     required this.btnText,
     required this.stayTime,
     required this.winCoin,
     required this.url,
     required this.index,
+    required this.color,
+    required this.tasklen,
+    // required this.onIsActiveChanged,
   });
 
   @override
@@ -25,6 +33,8 @@ class CommonPremiumTask extends StatefulWidget {
 class _CommonPremiumTaskState extends State<CommonPremiumTask> {
   late SharedPreferences _prefs;
   late DateTime _lastCompletion;
+  bool isActive = false;
+  late final tasklength;
 
   @override
   void initState() {
@@ -34,6 +44,17 @@ class _CommonPremiumTaskState extends State<CommonPremiumTask> {
 
   Future<void> _initializeSharedPreferences() async {
     _prefs = await SharedPreferences.getInstance();
+
+    if (gameCoins == 0) {
+      _prefs.setBool('task ${widget.index}', false);
+    }
+    if (widget.index == 0) {
+      _prefs.setInt(tasklenghtLabel, int.parse(widget.tasklen));
+    }
+    tasklength = _prefs.getInt(tasklenghtLabel);
+    setState(() {
+      widget.tasklen = tasklength.toString();
+    });
 
     _lastCompletion = DateTime.fromMillisecondsSinceEpoch(_prefs.getInt(
             'lastCompletion ${widget.btnText + widget.index.toString()}') ??
@@ -47,19 +68,46 @@ class _CommonPremiumTaskState extends State<CommonPremiumTask> {
     return difference.inHours >= 24;
   }
 
-  void _performTask() {
-    if (_canPerformTask()) {
-      Navigator.pushNamed(context, '/tracking', arguments: {
-        "link": widget.url,
-        "coin": widget.winCoin,
-        "seconds": widget.stayTime,
-        "type": "task",
-        "id": widget.index.toString(),
-        "taskname":
-            'lastCompletion ${widget.btnText + widget.index.toString()}',
-      });
+  void _performTask() async {
+    if (widget.index == 0 ||
+        _prefs.getBool('click ${widget.index - 1}') == true) {
+      if (_canPerformTask()) {
+        Navigator.pushNamed(context, '/tracking', arguments: {
+          "link": widget.url,
+          "coin": widget.winCoin,
+          "seconds": widget.stayTime,
+          "type": "task",
+          "index": widget.index.toString(),
+          "id": widget.index.toString(),
+          "taskname":
+              'lastCompletion ${widget.btnText + widget.index.toString()}',
+          "tasklen": widget.tasklen,
+        });
+      } else {
+        // Display a message indicating the user needs to wait
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: const Text(textAlign: TextAlign.center, 'Task Locked'),
+              content: const Text(
+                  textAlign: TextAlign.center,
+                  'You can perform this task again in 24 hours.'),
+              actions: <Widget>[
+                Center(
+                  child: TextButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: const Text('OK'),
+                  ),
+                ),
+              ],
+            );
+          },
+        );
+      }
     } else {
-      // Display a message indicating the user needs to wait
       showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -67,7 +115,7 @@ class _CommonPremiumTaskState extends State<CommonPremiumTask> {
             title: const Text(textAlign: TextAlign.center, 'Task Locked'),
             content: const Text(
                 textAlign: TextAlign.center,
-                'You can perform this task again in 24 hours.'),
+                'Perform previous task to unlock this.'),
             actions: <Widget>[
               Center(
                 child: TextButton(
@@ -108,7 +156,7 @@ class _CommonPremiumTaskState extends State<CommonPremiumTask> {
                     width: MediaQuery.of(context).size.width * 0.5,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(28),
-                      color: Colors.green,
+                      color: widget.color,
                       border: Border.all(color: Colors.black),
                     ),
                     child: Center(
@@ -132,7 +180,6 @@ class _CommonPremiumTaskState extends State<CommonPremiumTask> {
             ),
             Text(
               "Complete task in ${widget.stayTime} Seconds to win ${widget.winCoin} coins",
-              // "Complete task accoding to this video and send proof on mail to win 2000 coins",
               textAlign: TextAlign.center,
               style: const TextStyle(
                 fontWeight: FontWeight.bold,

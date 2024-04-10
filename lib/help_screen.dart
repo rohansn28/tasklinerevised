@@ -53,15 +53,12 @@ class _HelpScreenState extends State<HelpScreen> {
             padding: const EdgeInsets.all(16.0),
             child: Column(
               children: [
-                Commontop(
-                  refreshCallback: _refreshData,
-                ),
+                Commontop(),
                 const SizedBox(
                   height: 16,
                 ),
                 CommonMinCoinBar(
-                  text1: otherLinksModel.otherlinks![7].link,
-                  text2: otherLinksModel.otherlinks![8].link,
+                  text: '',
                 ),
                 const SizedBox(
                   height: 20,
@@ -166,10 +163,6 @@ class _HelpScreenState extends State<HelpScreen> {
                       ),
                       Text(
                         otherLinksModel.otherlinks![9].link,
-                        style: const TextStyle(
-                            // color: Colors.white,
-                            // fontWeight: FontWeight.w900,
-                            ),
                       ),
                     ],
                   ),

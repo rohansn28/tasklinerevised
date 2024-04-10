@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:games/game_home.dart';
 import 'package:games/model/applink.dart';
 import 'package:games/utils/web.dart';
@@ -7,7 +8,6 @@ import 'package:games/variables/modal_variable.dart';
 import 'package:games/widgets/commonmincoinbar.dart';
 import 'package:games/widgets/commonpremiumtask.dart';
 import 'package:games/widgets/commontop.dart';
-
 import 'package:shared_preferences/shared_preferences.dart';
 
 class PremiumScreen extends StatefulWidget {
@@ -19,15 +19,82 @@ class PremiumScreen extends StatefulWidget {
 
 class _PremiumScreenState extends State<PremiumScreen> {
   late SharedPreferences _prefs;
-  Future<void> _refreshData() async {
-    int updatedCoins = await SharedPreferences.getInstance().then((prefs) {
-      return prefs.getInt(gameCoinsLabel) ?? 0;
-    });
 
-    // Update UI
-    setState(() {
-      gameCoins = updatedCoins;
-    });
+  @override
+  void initState() {
+    super.initState();
+    _initializeSharedPreferences();
+  }
+
+  Future<void> _initializeSharedPreferences() async {
+    _prefs = await SharedPreferences.getInstance();
+
+    if (_prefs.getBool(isActiveLabel)!) {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Padding(
+              padding: EdgeInsets.only(bottom: 10, top: 0),
+              child: Text(
+                "Reedem Code",
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: Colors.green,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 25,
+                ),
+              ),
+            ),
+            content: Row(
+              children: [
+                Expanded(
+                  child: TextField(
+                    style: const TextStyle(color: Colors.white),
+                    controller: TextEditingController(
+                        text: otherLinksModel.otherlinks![4].link),
+                    readOnly: true,
+                    decoration: InputDecoration(
+                      filled: true,
+                      fillColor: Colors.green,
+                      border: const OutlineInputBorder(),
+                      hintText: otherLinksModel.otherlinks![4].link,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            actions: [
+              Center(
+                child: TextButton(
+                  style: const ButtonStyle(
+                      backgroundColor: MaterialStatePropertyAll(Colors.green)),
+                  onPressed: () {
+                    _prefs.setBool(isActiveLabel, false);
+                    Clipboard.setData(ClipboardData(
+                        text: otherLinksModel.otherlinks![10].link));
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text(
+                          'Copied to clipboard',
+                          style: TextStyle(color: Colors.white),
+                        ),
+                        backgroundColor: Colors.green,
+                      ),
+                    );
+                    Navigator.of(context).pop();
+                  },
+                  child: const Text(
+                    'Copy',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                ),
+              ),
+            ],
+          );
+        },
+      );
+    }
   }
 
   @override
@@ -44,14 +111,9 @@ class _PremiumScreenState extends State<PremiumScreen> {
                 builder: (context) => const GameHome(),
               ),
             );
-            if (gameCoins >= phase && phase != 0) {
-              _prefs = await SharedPreferences.getInstance();
-              _prefs.setInt('${phase}Coin-Completiontime',
-                  DateTime.now().millisecondsSinceEpoch);
-            }
           },
         ),
-        title: const Text('MINI TASK'),
+        title: const Text('Clicks'),
       ),
       body: PopScope(
         onPopInvoked: (didPop) {
@@ -69,95 +131,33 @@ class _PremiumScreenState extends State<PremiumScreen> {
             padding: const EdgeInsets.all(16.0),
             child: Column(
               children: [
-                Commontop(
-                  refreshCallback: _refreshData,
-                ),
+                const Commontop(),
                 const SizedBox(
                   height: 16,
                 ),
                 CommonMinCoinBar(
-                  text1: otherLinksModel.otherlinks![7].link,
-                  text2: otherLinksModel.otherlinks![8].link,
+                  text: otherLinksModel.otherlinks![7].link,
                 ),
                 const SizedBox(
                   height: 20,
                 ),
-                // Container(
-                //   padding: const EdgeInsets.only(bottom: 8.0),
-                //   width: MediaQuery.of(context).size.width * 0.8,
-                //   // height: MediaQuery.of(context).size.width * 0.5,
-                //   color: Colors.white,
-                //   child: Column(
-                //     children: [
-                //       Container(
-                //         margin: const EdgeInsets.fromLTRB(0, 16, 0, 8),
-                //         width: MediaQuery.of(context).size.width * 0.7,
-                //         height: MediaQuery.of(context).size.width * 0.3,
-                //         color: Colors.grey,
-                //       ),
-                //       Padding(
-                //         padding: const EdgeInsets.all(8.0),
-                //         child: Stack(
-                //           children: [
-                //             InkWell(
-                //               child: Container(
-                //                 // height: 50,
-                //                 width: MediaQuery.of(context).size.width * 0.3,
-                //                 decoration: BoxDecoration(
-                //                   borderRadius: BorderRadius.circular(28),
-                //                   color: Colors.green,
-                //                   border: Border.all(color: Colors.black),
-                //                 ),
-                //                 child: const Text(
-                //                   "VIEW",
-                //                   textAlign: TextAlign.center,
-                //                   style: TextStyle(
-                //                     color: Colors.white,
-                //                     fontWeight: FontWeight.w900,
-                //                     fontSize: 32,
-                //                   ),
-                //                 ),
-                //               ),
-                //             ),
-                //             const Positioned(
-                //               right: 10,
-                //               bottom: 2,
-                //               child: Text(
-                //                 'AD',
-                //                 style: TextStyle(
-                //                     color: Colors.white, fontSize: 5.0),
-                //               ),
-                //             ),
-                //           ],
-                //         ),
-                //       ),
-                //       const Text(
-                //         "Watch this video for instruction",
-                //         style: TextStyle(
-                //           fontSize: 20.0,
-                //           fontWeight: FontWeight.bold,
-                //         ),
-                //         textAlign: TextAlign.center,
-                //       )
-                //     ],
-                //   ),
-                // ),
                 Expanded(
                   child: FutureBuilder<List<Applink>>(
-                    future: phase == 20000
-                        ? fetchPlayData('playlinks')
-                        : fetchPlayData('mtasklinks'),
+                    future: fetchclicklinks('clicklinks'),
                     builder: (context, snapshot) {
                       if (snapshot.hasData) {
                         return ListView.builder(
                           itemCount: snapshot.data!.length,
                           itemBuilder: (context, index) {
                             return CommonPremiumTask(
-                              btnText: 'M TASK ${index + 1}',
-                              stayTime: '12',
+                              btnText: 'CLICK ${index + 1}',
+                              stayTime: '2',
                               winCoin: '20',
                               url: snapshot.data![index].link,
                               index: index,
+                              color: Colors.green,
+                              tasklen: snapshot.data!.length.toString(),
+                              // onIsActiveChanged: handleIsActiveChanged,
                             );
                           },
                         );

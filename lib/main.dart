@@ -1,18 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:games/bonus_screen.dart';
 import 'package:games/game_home.dart';
-import 'package:games/game_screen.dart';
 import 'package:games/help_screen.dart';
-import 'package:games/leaderboard.dart';
-import 'package:games/play.dart';
 import 'package:games/premium_screen.dart';
 import 'package:games/resumetracking_screen.dart';
 import 'package:games/startpage.dart';
-import 'package:games/task_line_screen.dart';
 import 'package:games/utils/web.dart';
-
 import 'package:onesignal_flutter/onesignal_flutter.dart';
-
 import 'package:kochava_tracker/kochava_tracker.dart';
 
 void main() async {
@@ -28,12 +21,10 @@ void main() async {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    // fetchData();
     return MaterialApp(
-      title: 'Taskline',
+      title: 'TaskLine',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         scaffoldBackgroundColor: const Color.fromARGB(255, 98, 42, 71),
@@ -54,14 +45,9 @@ class MyApp extends StatelessWidget {
         "/gamehome": (context) => const GameHome(),
         "/": (context) => const StartPg(),
         "/startpg": (context) => const StartPg(),
-        "/play": (context) => const PlayScreen(),
-        "/taskline": (context) => const TaskLineScreen(),
-        "/bonus": (context) => const BounsScreen(),
-        "/game": (context) => const GameScreen(),
         "/premium": (context) => const PremiumScreen(),
         "/help": (context) => const HelpScreen(),
         "/tracking": (context) => const ResumeTrackingScreen(),
-        "/leaderboard": (context) => const LeaderBoardScreen(),
       },
     );
   }
