@@ -33,7 +33,7 @@ class _NeedHelpBoxState extends State<NeedHelpBox> {
             height: MediaQuery.of(context).size.height * 0.17,
             child: const Center(
                 child: Text(
-              'HELP?',
+              'NEED HELP?',
               style: TextStyle(
                 color: Colors.white,
                 fontSize: 28.0,

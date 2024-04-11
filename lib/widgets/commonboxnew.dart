@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class CommonBoxNew extends StatefulWidget {
   final String text;
-
+  final String? deviceid, shareText;
   final String route;
   final double fontSize;
   const CommonBoxNew({
@@ -10,6 +10,8 @@ class CommonBoxNew extends StatefulWidget {
     required this.text,
     required this.route,
     required this.fontSize,
+    this.deviceid,
+    this.shareText,
   });
 
   @override
@@ -23,7 +25,10 @@ class _CommonBoxNewState extends State<CommonBoxNew> {
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: InkWell(
         onTap: () {
-          Navigator.pushNamed(context, widget.route);
+          Navigator.pushNamed(context, widget.route, arguments: {
+            "deviceid": widget.deviceid,
+            "sharetext": widget.shareText,
+          });
         },
         child: Card(
           shape: RoundedRectangleBorder(

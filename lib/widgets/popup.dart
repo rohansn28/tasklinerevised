@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:games/premium_screen.dart';
 import 'package:games/utils/web.dart';
 import 'package:games/variables/local_variables.dart';
+import 'package:games/variables/modal_variable.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class PopUp extends StatefulWidget {
@@ -77,23 +78,36 @@ class _PopUpState extends State<PopUp> {
                         _prefs.setInt(widget.taskname,
                             DateTime.now().millisecondsSinceEpoch);
 
-                        _prefs.setBool('click ${widget.taskindex}', true);
+                        if (widget.taskindex == "0") {
+                          _prefs.setBool('task ${widget.taskindex}', true);
+                        }
+
+                        if (int.parse(widget.taskindex) ==
+                            (int.parse(widget.tasklen) - 1)) {
+                          _prefs.setBool('task ${widget.tasklen}', true);
+                        }
+                        _prefs.setBool(
+                            'task ${int.parse(widget.taskindex) - 1}', false);
+                        _prefs.setBool('task ${widget.taskindex}', true);
 
                         if (_prefs.getBool(
-                                'click ${int.parse(widget.tasklen) - 1}') ==
+                                'task ${int.parse(widget.tasklen) - 1}') ==
                             true) {
                           _prefs.setBool(isActiveLabel, true);
                         }
 
                         Navigator.pop(context);
 
-                        if (widget.taskname.contains('CLICK')) {
+                        if (widget.taskname.contains('TASK')) {
                           deviceId = _prefs.getString(deviceIdLabel)!;
                           updateCoins(deviceId, gameCoins.toString());
                           Navigator.pushReplacement(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => const PremiumScreen(),
+                              builder: (context) => PremiumScreen(
+                                sharetext: otherLinksModel.otherlinks![11].link,
+                                deviceid: _prefs.getString(deviceIdLabel)!,
+                              ),
                             ),
                           );
                         }

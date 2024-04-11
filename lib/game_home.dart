@@ -6,7 +6,8 @@ import 'package:games/widgets/commonboxnew.dart';
 import 'package:games/widgets/commonmincoinbar.dart';
 import 'package:games/widgets/commontop.dart';
 import 'package:games/widgets/commonunlockbox.dart';
-import 'package:games/widgets/help.dart';
+import 'package:games/widgets/helpbox.dart';
+
 import 'package:shared_preferences/shared_preferences.dart';
 
 class GameHome extends StatefulWidget {
@@ -17,51 +18,20 @@ class GameHome extends StatefulWidget {
 }
 
 class _GameHomeState extends State<GameHome> {
-  Timer? _timer;
-  @override
-  void initState() {
-    super.initState();
-    getdeviceId();
-    _startTimer();
-    // updateCoins(deviceId, gameCoins.toString());
-  }
-
-  @override
-  void dispose() {
-    // Dispose the timer when the widget is disposed
-    _timer?.cancel();
-    super.dispose();
-  }
-
-  void _startTimer() {
-    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
-      var now = DateTime.now();
-      if (now.hour == 23 && now.minute == 59 && now.second == 59) {
-        // Reset your data here
-        _resetData();
-      }
-    });
-  }
-
-  void _resetData() async {
-    // Perform your data reset task here
-    var prefs = await SharedPreferences.getInstance();
-    var tasklen = prefs.getInt(tasklenghtLabel)!;
-    prefs.setBool("task ${tasklen - 1}", false);
-
-    print('Resetting data at ${DateTime.now()}');
-    // You can update state variables or call functions to reset data
-  }
+  String? devId;
 
   Future<void> getdeviceId() async {
     var prefs = await SharedPreferences.getInstance();
     deviceId = prefs.getString(deviceIdLabel)!;
+    setState(() {
+      devId = deviceId;
+    });
   }
 
   Future<bool> showOrNot() async {
     var prefs = await SharedPreferences.getInstance();
     var tasklen = prefs.getInt(tasklenghtLabel)!;
-    var tasklenval = prefs.getBool("click ${tasklen - 1}");
+    var tasklenval = prefs.getBool("task $tasklen");
 
     return tasklenval!;
   }
@@ -85,21 +55,31 @@ class _GameHomeState extends State<GameHome> {
                 const SizedBox(
                   height: 16.0,
                 ),
-                const Row(
+                Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     CommonBoxNew(
-                      text: 'CLICKS',
+                      text: 'TASKS',
                       route: '/premium',
                       fontSize: 30.0,
+                      deviceid: devId,
+                      shareText: otherLinksModel.otherlinks![11].link,
                     ),
+                    const NeedHelpBox(route: '/help'),
                   ],
                 ),
                 if (objLive)
                   const Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
-                      CommonUnlockBox(text: "Premium Task", fontSize: 25),
+                      CommonUnlockBox(
+                        text: "PREMIUM GAMES",
+                        fontSize: 25,
+                      ),
+                      CommonUnlockBox(
+                        text: "AD FREE GAMES",
+                        fontSize: 28.0,
+                      ),
                     ],
                   ),
                 FutureBuilder(
@@ -109,9 +89,11 @@ class _GameHomeState extends State<GameHome> {
                       return const CircularProgressIndicator();
                     } else {
                       if (snapshot.hasData && snapshot.data!) {
-                        return const CommonUnlockBox(
+                        return CommonUnlockBox(
                           text: "Get Code",
                           fontSize: 25,
+                          deviceid: devId,
+                          shareText: otherLinksModel.otherlinks![11].link,
                         );
                       } else {
                         return const SizedBox();

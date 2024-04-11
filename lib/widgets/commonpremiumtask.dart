@@ -70,7 +70,7 @@ class _CommonPremiumTaskState extends State<CommonPremiumTask> {
 
   void _performTask() async {
     if (widget.index == 0 ||
-        _prefs.getBool('click ${widget.index - 1}') == true) {
+        _prefs.getBool('task ${widget.index - 1}') == true) {
       if (_canPerformTask()) {
         Navigator.pushNamed(context, '/tracking', arguments: {
           "link": widget.url,

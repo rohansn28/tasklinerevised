@@ -53,12 +53,15 @@ class _HelpScreenState extends State<HelpScreen> {
             padding: const EdgeInsets.all(16.0),
             child: Column(
               children: [
-                Commontop(),
+                SizedBox(
+                  width: MediaQuery.of(context).size.width,
+                ),
+                const Commontop(),
                 const SizedBox(
                   height: 16,
                 ),
                 CommonMinCoinBar(
-                  text: '',
+                  text: otherLinksModel.otherlinks![7].link,
                 ),
                 const SizedBox(
                   height: 20,
