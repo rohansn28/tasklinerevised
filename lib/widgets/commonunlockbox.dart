@@ -203,8 +203,12 @@ class CommonUnlockBox extends StatelessWidget {
           elevation: 10.0,
           color: Colors.green,
           child: Container(
-            width: MediaQuery.of(context).size.width / 2.5,
-            height: MediaQuery.of(context).size.height * 0.17,
+            width: text == 'PREMIUM GAMES'
+                ? MediaQuery.of(context).size.width * 0.6
+                : MediaQuery.of(context).size.width / 2.5,
+            height: text == 'PREMIUM GAMES'
+                ? MediaQuery.of(context).size.height * 0.1
+                : MediaQuery.of(context).size.height * 0.17,
             child: Center(
               child: Text(
                 text,

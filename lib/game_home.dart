@@ -76,10 +76,10 @@ class _GameHomeState extends State<GameHome> {
                         text: "PREMIUM GAMES",
                         fontSize: 25,
                       ),
-                      CommonUnlockBox(
-                        text: "AD FREE GAMES",
-                        fontSize: 28.0,
-                      ),
+                      // CommonUnlockBox(
+                      //   text: "AD FREE GAMES",
+                      //   fontSize: 28.0,
+                      // ),
                     ],
                   ),
                 FutureBuilder(
